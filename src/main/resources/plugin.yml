@@ -5,3 +5,10 @@ api-version: '1.20'
 authors: [ zhi ]
 description: 一个仿COD名片的插件，依赖云拾
 website: https://github.com/Giant-Diao-Team
+# 命令配置
+commands:
+  dnc:
+    description: DiaoNameCard 插件主命令
+    usage: /dnc <reload|add|remove|set>
+    permission: diaonamecard.use
+    aliases: [namecard]
