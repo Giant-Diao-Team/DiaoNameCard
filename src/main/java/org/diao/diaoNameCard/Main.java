@@ -18,7 +18,7 @@ import org.diao.diaoNameCard.storage.SQLite;
  *
  * 作者: 止
  * 团队: 大貂team
- * GitHub: https://github.com/DiaoTeam/DiaoNameCard
+ * GitHub: https://github.com/DiaoTeam/DiaoNameCard 感谢支持
  */
 public final class Main extends JavaPlugin {
 
