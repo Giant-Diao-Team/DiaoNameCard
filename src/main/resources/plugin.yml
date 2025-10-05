@@ -1,0 +1,7 @@
+name: DiaoNameCard
+version: '1.0-SNAPSHOT'
+main: org.diao.diaoNameCard.Main
+api-version: '1.20'
+authors: [ zhi ]
+description: 一个仿COD名片的插件，依赖云拾
+website: https://github.com/Giant-Diao-Team
