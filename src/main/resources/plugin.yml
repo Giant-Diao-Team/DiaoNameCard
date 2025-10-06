@@ -8,7 +8,43 @@ website: https://github.com/Giant-Diao-Team
 # 命令配置
 commands:
   dnc:
-    description: DiaoNameCard 插件主命令
-    usage: /dnc <reload|add|remove|set>
-    permission: diaonamecard.use
+    description: 大貂名片插件的主命令。
+    usage: "/dnc <reload|add|remove|set>"
+    permission: diaonamecard.player
     aliases: [namecard]
+permissions:
+  # 玩家总权限节点
+  diaonamecard.player:
+    description: 允许玩家使用 /dnc 的基础命令。
+    default: true
+
+  # 玩家设置名片的权限
+  diaonamecard.player.set:
+    description: 允许玩家使用 /dnc set 命令来设置自己的名片。
+    # 设置为 true, 这样所有玩家默认都可以使用
+    default: true
+
+  # 管理员总权限节点 (可选, 方便给予所有管理权限)
+  diaonamecard.admin:
+    description: 给予所有大貂名片插件的管理权限。
+    default: op
+    children:
+      # 子权限: 只要拥有 admin, 就自动拥有以下所有权限
+      diaonamecard.admin.reload: true
+      diaonamecard.admin.add: true
+      diaonamecard.admin.remove: true
+
+  # 管理员重载权限
+  diaonamecard.admin.reload:
+    description: 允许使用 /dnc reload 命令。
+    default: op
+
+  # 管理员添加名片权限
+  diaonamecard.admin.add:
+    description: 允许使用 /dnc add 命令。
+    default: op
+
+  # 管理员移除名片权限
+  diaonamecard.admin.remove:
+    description: 允许使用 /dnc remove 命令。
+    default: op

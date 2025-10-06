@@ -25,7 +25,31 @@ public class DncCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.GOLD + "/dnc <reload|add|remove|set>");
+            sender.sendMessage(ChatColor.GOLD + "========== " + ChatColor.AQUA + "大貂名片 帮助" + ChatColor.GOLD + " ==========");
+
+            boolean hasAnyCommand = false;
+            if (sender.hasPermission("diaonamecard.player.set")) {
+                sender.sendMessage(ChatColor.YELLOW + "/dnc set <名片ID>" + ChatColor.GRAY + " - 佩戴你拥有的名片");
+                hasAnyCommand = true;
+            }
+            if (sender.hasPermission("diaonamecard.admin.reload")) {
+                sender.sendMessage(ChatColor.YELLOW + "/dnc reload" + ChatColor.GRAY + " - 重载插件配置文件");
+                hasAnyCommand = true;
+            }
+            if (sender.hasPermission("diaonamecard.admin.add")) {
+                sender.sendMessage(ChatColor.YELLOW + "/dnc add <玩家> <名片ID>" + ChatColor.GRAY + " - 给予玩家名片");
+                hasAnyCommand = true;
+            }
+            if (sender.hasPermission("diaonamecard.admin.remove")) {
+                sender.sendMessage(ChatColor.YELLOW + "/dnc remove <玩家> <名片ID>" + ChatColor.GRAY + " - 移除玩家名片");
+                hasAnyCommand = true;
+            }
+
+            if (!hasAnyCommand) {
+                sender.sendMessage(ChatColor.RED + "你当前没有任何可用命令。");
+            }
+
+            sender.sendMessage(ChatColor.GOLD + "===================================");
             return true;
         }
 
@@ -44,7 +68,7 @@ public class DncCommand implements CommandExecutor, TabCompleter {
                 handleSet(sender, args);
                 break;
             default:
-                sender.sendMessage(ChatColor.RED + "未知子命令。");
+                sender.sendMessage(ChatColor.RED + "未知子命令，请输入 /dnc 查看帮助。");
                 break;
         }
         return true;
@@ -56,7 +80,7 @@ public class DncCommand implements CommandExecutor, TabCompleter {
             return;
         }
         plugin.getCardManager().loadCards();
-        sender.sendMessage(ChatColor.GREEN + "DiaoNameCard 插件配置已重载。");
+        sender.sendMessage(ChatColor.GREEN + "大貂名片插件配置已重载。");
     }
 
     private void handleAdd(CommandSender sender, String[] args) {
@@ -131,11 +155,9 @@ public class DncCommand implements CommandExecutor, TabCompleter {
             return;
         }
 
-        // 检查玩家是否拥有该名片
         plugin.getPlayerDataManager().playerHasCard(player.getUniqueId(), cardId).thenAccept(hasCard -> {
-            // 在主线程中执行消息发送
             Bukkit.getScheduler().runTask(plugin, () -> {
-                if (hasCard || cardId.equalsIgnoreCase(plugin.getCardManager().getDefaultCardId())) {
+                if (hasCard) {
                     plugin.getPlayerDataManager().setEquippedCard(player.getUniqueId(), cardId);
                     player.sendMessage(ChatColor.GREEN + "你已成功佩戴名片: " + cardId);
                 } else {
@@ -153,23 +175,22 @@ public class DncCommand implements CommandExecutor, TabCompleter {
             if (sender.hasPermission("diaonamecard.admin.add")) subCommands.add("add");
             if (sender.hasPermission("diaonamecard.admin.remove")) subCommands.add("remove");
             if (sender.hasPermission("diaonamecard.player.set")) subCommands.add("set");
-            return subCommands.stream().filter(s -> s.startsWith(args[0])).collect(Collectors.toList());
+            return subCommands.stream().filter(s -> s.startsWith(args[0].toLowerCase())).collect(Collectors.toList());
         }
 
         if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("set")) {
+            if (args[0].equalsIgnoreCase("set") && sender.hasPermission("diaonamecard.player.set")) {
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
-                    // 返回玩家拥有的所有名片ID列表
                     List<String> ownedCardIds = new ArrayList<>();
                     plugin.getPlayerDataManager().getPlayerOwnedCards(player.getUniqueId())
                             .thenAccept(cards -> ownedCardIds.addAll(cards.stream().map(NameCard::getId).collect(Collectors.toList())))
-                            .join(); // 等待异步完成 (在 TabCompleter 中可以，但不推荐在主逻辑中)
-                    return ownedCardIds.stream().filter(s -> s.startsWith(args[1])).collect(Collectors.toList());
+                            .join();
+                    return ownedCardIds.stream().filter(s -> s.startsWith(args[1].toLowerCase())).collect(Collectors.toList());
                 }
             }
-            if (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("remove")) {
-                // 返回在线玩家列表
+            if ((args[0].equalsIgnoreCase("add") && sender.hasPermission("diaonamecard.admin.add")) ||
+                    (args[0].equalsIgnoreCase("remove") && sender.hasPermission("diaonamecard.admin.remove"))) {
                 return Bukkit.getOnlinePlayers().stream().map(Player::getName)
                         .filter(name -> name.toLowerCase().startsWith(args[1].toLowerCase()))
                         .collect(Collectors.toList());
@@ -177,8 +198,8 @@ public class DncCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 3) {
-            if (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("remove")) {
-                // 返回所有可用的名片ID
+            if ((args[0].equalsIgnoreCase("add") && sender.hasPermission("diaonamecard.admin.add")) ||
+                    (args[0].equalsIgnoreCase("remove") && sender.hasPermission("diaonamecard.admin.remove"))) {
                 return plugin.getCardManager().getAllCards().stream().map(NameCard::getId)
                         .filter(id -> id.toLowerCase().startsWith(args[2].toLowerCase()))
                         .collect(Collectors.toList());
