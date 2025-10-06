@@ -3,6 +3,7 @@
 [![作者](https://img.shields.io/badge/作者-止-blue.svg)](https://github.com/ZHI-CCC)
 [![团队](https://img.shields.io/badge/团队-大貂Team-orange.svg)](https://github.com/Giant-Diao-Team)
 [![版本](https://img.shields.io/badge/版本-1.0.0-brightgreen.svg)](https://github.com/Giant-Diao-Team/DiaoNameCard)
+本插件备注由 CodeGeeX 生成 （自动生成备注是真tmd好用）
 
 一款为 Minecraft 服务器设计的、高度可定制的大貂化名片系统插件，允许玩家收集、展示和佩戴独特的个人名片。
 
