@@ -75,7 +75,7 @@ public final class Main extends JavaPlugin {
             return;
         }
 
-        getLogger().info("[大貂名片] 成功挂钩到前置插件 CloudPick, 插件将继续加载...");
+        getLogger().info("[大貂名片] 成功挂钩到前置插件 DiaoCore, 插件将继续加载...");
 
         // 1. 保存默认配置文件
         saveDefaultConfig();
