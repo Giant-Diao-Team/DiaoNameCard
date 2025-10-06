@@ -99,7 +99,7 @@ public class CardManager {
 
     /**
      * 获取默认名片的ID
-     * @return 默认名片ID
+     * @return 默认名片ID, 如果配置无效则返回 null
      */
     public String getDefaultCardId() {
         return defaultCardId;

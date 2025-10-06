@@ -51,12 +51,26 @@ public final class Main extends JavaPlugin {
 
         // --- 前置插件检测 ---
         if (getServer().getPluginManager().getPlugin("CloudPick") == null) {
-            getLogger().severe("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            getLogger().severe("! [致命错误] 未找到核心前置插件: CloudPick !");
-            getLogger().severe("! 大貂名片插件依赖 CloudPick 插件进行客户端通信。");
-            getLogger().severe("! 请确保您已将 CloudPick-Bukkit.jar 放入 plugins 文件夹。");
-            getLogger().severe("! 插件将自动禁用以防止服务器出错。");
-            getLogger().severe("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            getLogger().severe("************************************************************");
+            getLogger().severe("* [致命错误] 未找到核心前置插件: CloudPick !");
+            getLogger().severe("* 大貂名片插件依赖 CloudPick 插件进行客户端通信。");
+            getLogger().severe("* 请确保您已将 CloudPick-Bukkit.jar 放入 plugins 文件夹。");
+            getLogger().severe("* 插件将自动禁用以防止服务器出错。");
+            getLogger().severe("************************************************************");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        getLogger().info("[大貂名片] 成功挂钩到前置插件 CloudPick, 插件将继续加载...");
+
+        if (getServer().getPluginManager().getPlugin("DiaoCore") == null) {
+            getLogger().severe("************************************************************");
+            getLogger().severe("* [致命错误] 未找到核心前置插件: DiaoCore !");
+            getLogger().severe("* 大貂名片插件依赖 DiaoCore 插件进行大貂化。");
+            getLogger().severe("* 请确保您已将 DiaoCore 插件放入 plugins 文件夹。");
+            getLogger().severe("* 没有大貂核心就像 貂 没有 蛋蛋 肯定起不了作用");
+            getLogger().severe("* 插件将自动禁用以防止服务器出错。");
+            getLogger().severe("************************************************************");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
