@@ -50,6 +50,22 @@ public class CardManager {
         }
 
         this.defaultCardId = plugin.getConfig().getString("namecards.default-card-id", "");
+
+        // 验证 default-card-id 的有效性，防止因配置错误导致功能失效
+        if (this.defaultCardId == null || this.defaultCardId.isEmpty()) {
+            // 如果服主根本没设置默认ID，给一个温和的警告
+            plugin.getLogger().warning("配置文件中未设置 'default-card-id'，默认名片功能可能无法正常工作。");
+        } else if (getCard(this.defaultCardId) == null) {
+            // 如果设置的ID是无效的，给出严重的错误提示
+            plugin.getLogger().severe("************************************************************");
+            plugin.getLogger().severe("* [配置错误] 'default-card-id' 的值 '" + this.defaultCardId + "' 不是一个有效的名片 ID。");
+            plugin.getLogger().severe("* 请检查 'namecards.cards' 列表中是否存在此 ID。");
+            plugin.getLogger().severe("* 默认名片功能已被禁用，直到你填写正确的ID。");
+            plugin.getLogger().severe("************************************************************");
+            // 将 defaultCardId 设为 null，安全地禁用该功能，防止后续出错
+            this.defaultCardId = null;
+        }
+
         plugin.getLogger().info("成功加载了 " + nameCards.size() + " 个名片。");
     }
 
