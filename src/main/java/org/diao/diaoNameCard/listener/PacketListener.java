@@ -10,6 +10,9 @@ import yslelf.cloudpick.bukkit.api.PacketSender;
 import yslelf.cloudpick.bukkit.api.event.CustomPacketEvent;
 
 import java.util.Comparator;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * CloudPick API 数据包监听器
@@ -71,31 +74,48 @@ public class PacketListener implements Listener {
      * @param event CustomPacketEvent
      */
     private void handleGetCardList(CustomPacketEvent event) {
-        // 从数据包中获取目标玩家的名称
         String targetPlayerName = event.getData().toArray(new String[0])[0];
-        // 根据名称获取玩家对象
         Player targetPlayer = Bukkit.getPlayer(targetPlayerName);
-        // 获取发送请求的玩家
         Player requester = event.getPlayer();
 
         if (targetPlayer == null) return;
 
-        // 异步获取目标玩家拥有的所有名片（已修复，现在会包含默认名片）
-        plugin.getPlayerDataManager().getPlayerOwnedCards(targetPlayer.getUniqueId()).thenAccept(cards -> {
-            // 按名片配置中的层级从小到大排序
-            cards.sort(Comparator.comparingInt(NameCard::getLayer));
+        // 异步获取玩家拥有的名片
+        plugin.getPlayerDataManager().getPlayerOwnedCards(targetPlayer.getUniqueId()).thenAccept(ownedCards -> {
+            // 获取全部名片（已排序）
+            Collection<NameCard> allCards = plugin.getCardManager().getAllCardsSorted();
 
-            // 遍历排序后的名片列表，逐个发送给客户端
-            for (NameCard card : cards) {
-                // [已修正] 确保数据发送顺序为: 名片id, 贴图路径, 展示名, 描述
+            // 创建已拥有名片的ID集合用于快速查找
+            Set<String> ownedCardIds = ownedCards.stream()
+                    .map(NameCard::getId)
+                    .collect(Collectors.toSet());
+
+            // 先发送玩家拥有的名片
+            for (NameCard card : ownedCards) {
                 PacketSender.sendCustomData(
                         requester,
                         SEND_CARD_LIST_IDENTIFIER,
-                        card.getId(),           // 1. 名片id
-                        card.getTexturePath(),  // 2. 贴图路径
-                        card.getDisplayName(),  // 3. 展示名
-                        card.getDescription()   // 4. 描述
+                        card.getId(),
+                        card.getTexturePath(),
+                        card.getDisplayName(),
+                        card.getDescription(),
+                        "true"  // 玩家拥有此名片
                 );
+            }
+
+            // 再发送玩家没有的名片
+            for (NameCard card : allCards) {
+                if (!ownedCardIds.contains(card.getId())) {
+                    PacketSender.sendCustomData(
+                            requester,
+                            SEND_CARD_LIST_IDENTIFIER,
+                            card.getId(),
+                            card.getTexturePath(),
+                            card.getDisplayName(),
+                            card.getDescription(),
+                            "false"  // 玩家没有此名片
+                    );
+                }
             }
         });
     }
