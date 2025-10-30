@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.zhi</groupId>
-    <artifactId>diaonamecard</artifactId>
+    <artifactId>DiaoNameCard</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
