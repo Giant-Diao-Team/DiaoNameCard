@@ -19,16 +19,17 @@
 ## 📥 安装与依赖
 
 1. **下载插件**:
-   - 前往 [**发布页面**](https://github.com/Giant-Diao-Team/DiaoNameCard/releases) 下载最新的 `DiaoNameCard-x.x.x.jar` 文件。
+   - 前往 [**云拾社区**]() 下载最新的 `DiaoNameCard-x.x.x.jar` 文件。
 
 2. **安装核心插件**:
    - 将下载的 `DiaoNameCard-x.x.x.jar` 文件放入您服务器的 `plugins` 文件夹。
 
 3. **安装前置依赖**:
    - **[必需]** 本插件依赖 **`CloudPick`** 插件进行客户端通信。请确保您的 `plugins` 文件夹中已经安装了 `CloudPick-Bukkit-x.x.x.jar`。
+   - **[必需]** 本插件依赖 **`DiaoCore`** 插件进行大貂化。
 
 4. **启动服务器**:
-   - 启动您的 Spigot/Paper 1.20.1+ 服务器。首次启动后，插件会自动在 `plugins/DiaoNameCard` 目录下生成默认的 `config.yml` 配置文件。
+   - 启动您的 Spigot/Paper 1.18.2+ 服务器。
 
 ## 📜 命令与权限
 
@@ -53,7 +54,12 @@
 - **请求拥有的名片列表**:
   - 客户端发送标识符: `dnc_name_card_list`
   - 插件返回标识符: `dnc_card_list` (会为每张名片单独发送一次)
-  - 返回内容: `名片ID`, `贴图路径`, `展示名`, `描述` (按 `layer` 从小到大排序)
+  - 返回内容: `名片ID`, `贴图路径`, `展示名`, `描述`, `布尔值`(玩家是否拥有)(按 `layer` 从小到大排序)
+
+- **请求指定ID名片信息**:
+  - 客户端发送标识符: `dnc_id_card`
+  - 插件返回标识符: `dnc_id_card_i`
+  - 返回内容: `名片ID`, `贴图路径`, `展示名`, `描述`, `布尔值`(玩家是否拥有)
 
 ## ❓ 常见问题 (FAQ)
 
